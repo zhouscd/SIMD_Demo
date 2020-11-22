@@ -264,8 +264,10 @@ void runTest(const char* szname, TESTPROC proc)
 		n = proc(buf, BUFSIZE);
 	}
 	dt = clock() - tm0;
+	double time_s = (double)dt / CLOCKS_PER_SEC;
 	mps = (double)testloop*BUFSIZE*CLOCKS_PER_SEC/(1024.0*1024.0*dt);
-	printf("%s:\t%.0f M/s\t%ld ms\t sum:%f\n", szname, mps, dt, n);
+	//printf("%s:\t%.0f M/s\t%f s\t sum:%f\n", szname, mps, time_s, n);
+	printf("%s:\t\t  io: %.0f mb/s\t  time:%f s sum:%f\n", szname, mps, time_s, n);
 }
 
 int main(int argc, char* argv[])
@@ -289,14 +291,14 @@ int main(int argc, char* argv[])
 	if (simd_sse_level(NULL) >= SIMD_SSE_1)
 	{
 		runTest("sumfloat_sse", sumfloat_sse);	// 单精度浮点数组求和_SSE版.
-		runTest("sumfloat_sse_4loop", sumfloat_sse_4loop);	// 单精度浮点数组求和_SSE四路循环展开版.
+		runTest("sumfloat_sse_4", sumfloat_sse_4loop);	// 单精度浮点数组求和_SSE四路循环展开版.
 	}
 #endif	// #ifdef INTRIN_SSE
 #ifdef INTRIN_AVX
 	if (simd_avx_level(NULL) >= SIMD_AVX_1)
 	{
 		runTest("sumfloat_avx", sumfloat_avx);	// 单精度浮点数组求和_AVX版.
-		runTest("sumfloat_avx_4loop", sumfloat_avx_4loop);	// 单精度浮点数组求和_AVX四路循环展开版.
+		runTest("sumfloat_avx_4", sumfloat_avx_4loop);	// 单精度浮点数组求和_AVX四路循环展开版.
 	}
 #endif	// #ifdef INTRIN_AVX
 

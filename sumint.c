@@ -275,10 +275,10 @@ void runTest(const char* szname, TESTPROC proc)
 		n = proc(buf, BUFSIZE);	// 避免内循环被编译优化消掉.
 	}
 	dt = clock() - tm0;
-
+	double time_s = (double)dt / CLOCKS_PER_SEC;
 	// show
 	mps = (double)testloop*BUFSIZE*CLOCKS_PER_SEC/(1024.0*1024.0*dt);
-	printf("%s:\t%.0f M/s\t%ld ms //%ld\n", szname, mps,dt, n);
+	printf("%s:\t\t  io: %.0f mb/s\t  time:%f s sum:%ld\n", szname, mps, time_s, n);
 }
 
 int main(int argc, char* argv[])
@@ -303,14 +303,14 @@ int main(int argc, char* argv[])
 	if (simd_mmx(NULL))
 	{
 		runTest("sumint_mmx", sumint_mmx);	// 32位整数数组求和_MMX版.
-		runTest("sumint_mmx_4loop", sumint_mmx_4loop);	// 32位整数数组求和_MMX四路循环展开版.
+		runTest("sumint_mmx_4", sumint_mmx_4loop);	// 32位整数数组求和_MMX四路循环展开版.
 	}
 #endif	// #ifdef INTRIN_MMX
 #ifdef INTRIN_SSE2
 	if (simd_sse_level(NULL) >= SIMD_SSE_2)
 	{
 		runTest("sumint_sse", sumint_sse);	// 32位整数数组求和_SSE版.
-		runTest("sumint_sse_4loop", sumint_sse_4loop);	// 32位整数数组求和_SSE四路循环展开版.
+		runTest("sumint_sse_4", sumint_sse_4loop);	// 32位整数数组求和_SSE四路循环展开版.
 	}
 #endif	// #ifdef INTRIN_SSE2
 
